@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figurinos - MiraIra</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .filter-column {
+            background-color: #ff7300;
+            padding: 20px;
+            height: 80vh;
+            width: 180px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 5px;
+            overflow-y: auto;
+            margin-top: 50px;
+        }
+
+        .filter-column a {
+            color: white;
+            display: block;
+            margin-bottom: 10px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .filter-column a:hover {
+            color: #ffd700;
+        }
+
+        .filter-column hr {
+            border: 1px solid #fff;
+            margin: 10px 0;
+        }
+
+        .card {
+            display: none;
+        }
+
+        .card img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .container {
+            margin-left: 220px;
+        }
+
+        header {
+            margin-bottom: 50px;
+        }
+
+        .filters {
+            margin-bottom: 30px;
+        }
+
+        .add-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="bg-orange py-3">
+            <div class="container">
+                <a href="/" class="text-white me-3">Início</a>
+                <a href="/figurinos" class="text-white me-3">Figurinos</a>
+                <a href="/bolsistas" class="text-white me-3">Bolsistas</a>
+                <a href="/perfil" class="text-white">Perfil</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="filter-column">
+        <h4 class="text-white mb-4">Filtros</h4>
+        <ul class="list-unstyled">
+            <li><a href="#" onclick="filterCards('todos')">Todos</a></li>
+            <hr>
+            <li><a href="#" onclick="filterCards('junina')">Junina</a></li>
+            <li><a href="#" onclick="filterCards('vaqueiro')">Vaqueiro</a></li>
+            <li><a href="#" onclick="filterCards('pastoril')">Pastoril</a></li>
+            <li><a href="#" onclick="filterCards('carimbo')">Carimbo</a></li>
+            <li><a href="#" onclick="filterCards('coco')">Coco</a></li>
+            <li><a href="#" onclick="filterCards('reisado')">Reisado</a></li>
+            <li><a href="#" onclick="filterCards('frevo')">Frevo</a></li>
+        </ul>
+    </div>
+
+    <div class="container mt-5">
+        <button class="btn btn-primary add-btn" data-bs-toggle="modal" data-bs-target="#addFigurinoModal">Adicionar Figurino</button>
+        
+        <h1 class="text-center mb-4">Figurinos</h1>
+
+        <div class="filters mb-4">
+            <label for="tipo">Tipo:</label>
+            <select id="tipo" class="form-select w-auto d-inline-block me-3">
+                <option>Masculino</option>
+                <option>Feminino</option>
+            </select>
+
+            <label for="tamanho">Tamanho:</label>
+            <select id="tamanho" class="form-select w-auto d-inline-block me-3">
+                <option>P</option>
+                <option>M</option>
+                <option>G</option>
+                <option>GG</option>
+            </select>
+
+            <label for="categoria">Categoria:</label>
+            <select id="categoria" class="form-select w-auto d-inline-block">
+                <option>Calças</option>
+                <option>Blusas</option>
+                <option>Vestidos</option>
+                <option>Bermudas</option>
+                <option>Sapatos</option>
+            </select>
+        </div>
+
+        <div class="row" id="cards-container">
+
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="addFigurinoModal" tabindex="-1" aria-labelledby="addFigurinoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addFigurinoModalLabel">Adicionar Figurino</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addFigurinoForm">
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Tipo</label>
+                            <input type="text" class="form-control" id="tipo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tamanho" class="form-label">Tamanho</label>
+                            <input type="text" class="form-control" id="tamanho" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="categoria" class="form-label">Categoria</label>
+                            <input type="text" class="form-control" id="categoria" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="imagemUrl" class="form-label">Imagem URL</label>
+                            <input type="text" class="form-control" id="imagemUrl" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar Figurino</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFigurinos();
+
+            const addFigurinoForm = document.getElementById('addFigurinoForm');
+            addFigurinoForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const nome = document.getElementById('nome').value;
+                const tipo = document.getElementById('tipo').value;
+                const tamanho = document.getElementById('tamanho').value;
+                const categoria = document.getElementById('categoria').value;
+                const imagemUrl = document.getElementById('imagemUrl').value;
+
+                try {
+                    const response = await fetch('/figurinos', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ nome, tipo, tamanho, categoria, imagemUrl })
+                    });
+
+                    if (response.ok) {
+                        alert('Figurino adicionado com sucesso!');
+                        $('#addFigurinoModal').modal('hide');
+                        loadFigurinos();
+                    } else {
+                        alert('Erro ao adicionar figurino');
+                    }
+                } catch (err) {
+                    console.log(err);
+                    alert('Erro ao salvar figurino');
+                }
+            });
+        });
+
+        async function loadFigurinos() {
+            try {
+                const response = await fetch('/figurinos');
+                const figurinos = await response.json();
+                const cardsContainer = document.getElementById('cards-container');
+                cardsContainer.innerHTML = '';
+
+                figurinos.forEach(figurino => {
+                    const card = `
+                        <div class="col-md-4 card">
+                            <div class="card">
+                                <img src="${figurino.imagemUrl}" class="card-img-top" alt="${figurino.nome}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${figurino.nome}</h5>
+                                    <p class="card-text">Tamanho: ${figurino.tamanho}</p>
+                                    <p class="card-text">Categoria: ${figurino.categoria}</p>
+                                    <button class="btn btn-success" onclick="updateFigurino('${figurino._id}')">Editar</button>
+                                    <button class="btn btn-danger" onclick="deleteFigurino('${figurino._id}')">Excluir</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    cardsContainer.innerHTML += card;
+                });
+            } catch (err) {
+                console.log(err);
+                alert('Erro ao carregar figurinos');
+            }
+        }
+
+        async function deleteFigurino(id) {
+            if (confirm('Tem certeza que deseja excluir este figurino?')) {
+                try {
+                    await fetch(`/figurinos/${id}`, { method: 'DELETE' });
+                    loadFigurinos();
+                } catch (err) {
+                    console.log(err);
+                    alert('Erro ao excluir figurino');
+                }
+            }
+        }
+
+        function updateFigurino(id) {
+            alert('Função de atualização ainda não implementada!');
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color: hsl(62, 83%, 93%);
+    color: #333;
+}
+
+header {
+    background-color: #ff7300;
+    padding: 10px 0;
+    text-align: center;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 18px;
+}
+
+.content {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+.logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    width: 100px;
+    height: auto;
+}
+
+.miraira-text {
+    color: #ff7300;
+}
+
+footer {
+    background-color: #ff7300;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+footer .footer-links a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+}
+
+footer .footer-info {
+    text-align: center;
+}
+
+footer .footer-info p {
+    margin: 5px 0;
+}
+
+footer .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+footer .footer-info {
+    font-size: 14px;
+}
+
+.min-vh-100 {
+    min-height: 100vh;
+}
